@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
             whiteOverlay.style.opacity = whiteProgress;
         }
 
-        // Reveal About Us Content, invert logo and nav (92% to 100%)
+        // Reveal About Us Content, highlight nav (92% to 100%)
         const aboutUsContent = document.querySelector('.about-us-content');
         const logoMark = document.querySelector('.logo-mark');
         const sideNav = document.querySelector('.side-nav');
@@ -246,14 +246,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (progress > 0.92) {
                 aboutProgress = (progress - 0.92) / 0.08;
                 aboutUsContent.classList.add('is-active');
-                
-                logoMark.classList.add('invert');
-                if (sideNav) sideNav.classList.add('invert');
                 if (navAboutLink) navAboutLink.classList.add('active');
             } else {
                 aboutUsContent.classList.remove('is-active');
-                logoMark.classList.remove('invert');
-                if (sideNav) sideNav.classList.remove('invert');
                 if (navAboutLink) navAboutLink.classList.remove('active');
             }
             
@@ -305,4 +300,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial call
     updateScrollAnimation();
+
+    // --- About Us Video Looping Logic ---
+    const aboutVideoContainer = document.querySelector('.about-us-video-container');
+    if (aboutVideoContainer) {
+        const videoElements = aboutVideoContainer.querySelectorAll('video');
+        if (videoElements.length === 2) {
+            const videos = ['assets/about-us-1.webm', 'assets/about-us-2.webm'];
+            let currentVideoIndex = 0;
+            let activeEl = videoElements[0];
+            let inactiveEl = videoElements[1];
+            
+            // Preload second video
+            inactiveEl.src = videos[1];
+            
+            // Explicitly start playing the first video
+            activeEl.play().catch(e => console.error("Error playing initial about video:", e));
+
+            function handleVideoEnd() {
+                inactiveEl.play().then(() => {
+                    // Start crossfade
+                    activeEl.style.opacity = '0';
+                    inactiveEl.style.opacity = '1';
+                    
+                    // Swap logic
+                    const temp = activeEl;
+                    activeEl = inactiveEl;
+                    inactiveEl = temp;
+                    
+                    // Advance index
+                    currentVideoIndex = (currentVideoIndex + 1) % videos.length;
+                    const nextVideoIndex = (currentVideoIndex + 1) % videos.length;
+                    
+                    // Preload the next video into the new inactive element after the 1s fade is done
+                    setTimeout(() => {
+                        inactiveEl.src = videos[nextVideoIndex];
+                        inactiveEl.currentTime = 0;
+                        inactiveEl.load(); // Forces reset to play from beginning next time
+                    }, 1000);
+
+                    // Listen for the next end
+                    activeEl.addEventListener('ended', handleVideoEnd, { once: true });
+                }).catch(e => console.error("Error playing about video:", e));
+            }
+
+            activeEl.addEventListener('ended', handleVideoEnd, { once: true });
+        }
+    }
 });
