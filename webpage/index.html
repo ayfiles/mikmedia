@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mikmedia - Strategic Design & Code</title>
+    <meta name="description" content="Mikmedia - Strategic Design & Code. Manufactured in Germany.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Using Outfit for a clean, geometric, modern agency feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Using Syne for brutalist architectural display headers -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css?v=12">
+</head>
+    <div class="hero-sticky-container">
+        <main class="hero">
+            <!-- Background Layers -->
+            <div class="bg-wrapper">
+                <div class="bg-image light"></div>
+                <div class="bg-image dark"></div>
+                <video id="hero-videobg" class="hero-video" src="assets/hero-bg-rollover.mp4" muted playsinline preload="auto"></video>
+                <!-- Subtly blinking indicator for the lava lamp -->
+                <canvas class="lava-lamp-indicator" id="lava-lamp-indicator"></canvas>
+                <div class="bg-white-overlay"></div>
+            </div>
+            
+            <!-- Frosted Glass Vignette Layer -->
+            <div class="glass-vignette"></div>
+            
+            <!-- Foreground Content Layer -->
+            <div class="content">
+                <!-- Header: Logo & Join Button -->
+                <header class="header">
+                    <img src="assets/logo%20mark.svg" alt="Mikmedia Mark" class="logo-mark">
+                    <a href="#join" class="btn-join">JOIN</a>
+                </header>
+
+                <!-- Vertical Navigation -->
+                <nav class="side-nav">
+                    <a href="#about"><span class="slash">/</span> ABOUT US</a>
+                    <a href="#design"><span class="slash">/</span> DESIGN</a>
+                    <a href="#code"><span class="slash">/</span> CODE</a>
+                    <a href="#solutions"><span class="slash">/</span> SOLUTIONS</a>
+                    <a href="#contact"><span class="slash">/</span> CONTACT</a>
+                </nav>
+
+                <!-- Bottom Left Branding -->
+                <div class="bottom-brand">
+                    <img src="assets/mikmedia-copyright.svg" alt="Mikmedia Strategic Design & Code" class="logo-full">
+                    <p class="brand-text">
+                        <span class="slash">//</span> STRATEGIC DESIGN & CODE<br>
+                        MANUFACTURED IN GERMANY
+                    </p>
+                </div>
+
+                <!-- Bottom Right Theme Indicator -->
+                <div class="theme-indicator">
+                    <div class="theme-text-wrapper">
+                        <img src="assets/lights%20off.svg" alt="Lights Off Action" class="icon-text icon-light">
+                        <img src="assets/lights%20on.svg" alt="Lights On Action" class="icon-text icon-dark">
+                    </div>
+                    <img src="assets/arrow.svg" alt="Arrow" class="icon-arrow">
+                </div>
+
+                <!-- Carousel Pagination -->
+                <div class="carousel-indicators" role="tablist">
+                    <button class="dot" aria-label="Slide 1" role="tab"></button>
+                    <button class="dot" aria-label="Slide 2" role="tab"></button>
+                    <button class="dot active" aria-label="Slide 3" aria-selected="true" role="tab"></button>
+                    <button class="dot" aria-label="Slide 4" role="tab"></button>
+                    <button class="dot" aria-label="Slide 5" role="tab"></button>
+                </div>
+
+                <!-- About Us Revealed Content -->
+                <div class="about-us-content">
+                    <video class="about-us-video" src="assets/about-us-1.mp4" autoplay loop muted playsinline aria-hidden="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2;"></video>
+                    <div class="about-us-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(17, 17, 17, 0.5); z-index: -1;"></div>
+                    <div class="brutalist-grid">
+                        <div class="about-title-wrapper">
+                            <h2 class="massive-text">WE ARE<br>MIKMEDIA</h2>
+                        </div>
+                        <div class="about-text-wrapper">
+                            <p class="elegant-body">
+                                Mikmedia fuses strategic design with rigorous German engineering. We craft digital experiences that don't just look premium—they perform flawlessly.
+                            </p>
+                            <p class="elegant-body">
+                                Every pixel is deliberate. Every line of code holds purpose.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <div class="hero-scroll-spacer"></div>
+    </div>
+
+    <script src="script.js?v=5"></script>
+</body>
+</html>

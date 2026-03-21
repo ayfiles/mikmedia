@@ -1,0 +1,587 @@
+:root {
+    --text-color: #FAFBF6;
+    --accent-green: #81A354;
+    --font-main: 'Outfit', sans-serif;
+    --glass-bg: rgba(20, 20, 20, 0.15);
+    --transition-smooth: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    color: var(--text-color);
+    background-color: #111;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.hero-sticky-container {
+    position: relative;
+}
+
+.hero-scroll-spacer {
+    height: 300vh;
+}
+
+.hero {
+    position: sticky;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden; /* Lock scroll for the 100vh hero but allow body scroll */
+}
+
+/* Background wrapper filling the screen */
+.bg-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    /* Slight scale to allow a subtle parallax or entrance pulse if desired */
+    animation: slightZoom 10s ease-out forwards;
+}
+
+/* Individual background image layers */
+.bg-image {
+    position: absolute;
+    inset: 0;
+    transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bg-image.light {
+    background: url('assets/hero-bg-light.jpeg') center/cover no-repeat;
+    opacity: 1;
+}
+
+.bg-image.dark {
+    background: url('assets/hero-bg-dark.jpeg') center/cover no-repeat;
+    opacity: 0;
+}
+
+.hero-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.hero-video.scrolling-active {
+    opacity: 1;
+}
+
+/* Dark mode state active */
+.hero.is-dark .bg-image.light {
+    opacity: 0;
+}
+.hero.is-dark .bg-image.dark {
+    opacity: 1;
+}
+
+/* Subtle Lava Lamp Pulse Indicator */
+.lava-lamp-indicator {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2; /* above bg-images */
+    pointer-events: none;
+    opacity: 0;
+    animation: lowkeyPulse 7s infinite ease-in-out;
+}
+
+/* Hide indicator when background is already switched */
+.hero.is-dark .lava-lamp-indicator {
+    opacity: 0 !important;
+    animation: none;
+}
+
+/* 
+ * The Frosted Glass Vignette 
+ * Using a CSS mask to create a soft blur frame that leaves the center clear
+ */
+.glass-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    background: var(--glass-bg);
+    
+    /* Combine multiple linear gradients to create a soft rectangular ring mask */
+    mask-image: 
+        linear-gradient(to right, black 2%, transparent 25%),
+        linear-gradient(to left, black 2%, transparent 25%),
+        linear-gradient(to bottom, black 2%, transparent 20%),
+        linear-gradient(to top, black 2%, transparent 20%);
+    -webkit-mask-image: 
+        linear-gradient(to right, black 2%, transparent 25%),
+        linear-gradient(to left, black 2%, transparent 25%),
+        linear-gradient(to bottom, black 2%, transparent 20%),
+        linear-gradient(to top, black 2%, transparent 20%);
+        
+    /* If the browser supports mask-composite (add), this combines the fade nicely */
+    mask-composite: add;
+    -webkit-mask-composite: source-over;
+    pointer-events: none; /* Let clicks pass through to background if needed */
+}
+
+/* Overlay content container */
+.content {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Top Header: Logo & Join Button --- */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    animation: fadeSlideDown 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    position: relative;
+    z-index: 20;
+}
+
+.logo-mark {
+    width: clamp(100px, 10vw, 150px);
+    height: auto;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.6)) drop-shadow(0 4px 15px rgba(0,0,0,0.4));
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+    transform-origin: top left;
+}
+
+.logo-mark:hover {
+    transform: scale(1.05) rotate(-2deg);
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.7)) drop-shadow(0 8px 25px rgba(0,0,0,0.5));
+}
+
+.btn-join {
+    padding: 12px 36px;
+    border: 1px solid rgba(250, 251, 246, 0.4);
+    border-radius: 6px;
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 500;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.btn-join:hover {
+    background: var(--text-color);
+    color: #111;
+    border-color: var(--text-color);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+/* --- Vertical Navigation Menu --- */
+.side-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+    z-index: 20;
+}
+
+.side-nav a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    font-weight: 400;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: translate 0.3s ease, transform 0.3s ease, opacity 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    opacity: 0; /* Starter state for animation */
+    animation: fadeSlideRight 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.side-nav a .slash {
+    color: rgba(250, 251, 246, 0.6);
+    font-weight: 300;
+    transition: color 0.3s ease;
+}
+
+/* Nav Color Inversion Class */
+.side-nav.invert a {
+    color: #111;
+    text-shadow: none;
+}
+.side-nav.invert a .slash {
+    color: rgba(17, 17, 17, 0.6);
+}
+
+.side-nav a:hover,
+.side-nav a.active {
+    translate: 15px 0;
+    opacity: 0.8;
+}
+
+/* Staggered animation delays for the nav */
+.side-nav a:nth-child(1) { animation-delay: 0.2s; }
+.side-nav a:nth-child(2) { animation-delay: 0.3s; }
+.side-nav a:nth-child(3) { animation-delay: 0.4s; }
+.side-nav a:nth-child(4) { animation-delay: 0.5s; }
+.side-nav a:nth-child(5) { animation-delay: 0.6s; }
+
+/* --- Bottom Left Brand / Text --- */
+.bottom-brand {
+    position: absolute;
+    bottom: 60px;
+    left: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    opacity: 0;
+    animation: fadeSlideUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+}
+
+.logo-full {
+    width: clamp(140px, 14vw, 200px);
+    height: auto;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.6)) drop-shadow(0 4px 15px rgba(0,0,0,0.4));
+}
+
+.brand-text {
+    font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.5px;
+    color: #FAFBF6;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.6), 0 4px 15px rgba(0,0,0,0.4);
+}
+
+.brand-text .slash {
+    color: #FAFBF6;
+}
+
+/* --- Theme Indicator --- */
+.theme-indicator {
+    position: absolute;
+    bottom: 140px;
+    right: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    z-index: 20;
+    opacity: 0;
+    animation: fadeSlideUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+    pointer-events: none;
+}
+
+.theme-text-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+/* Icon Sizing */
+.theme-indicator .icon-text {
+    width: clamp(56px, 7vw, 84px);
+    height: auto;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.6)) drop-shadow(0 4px 15px rgba(0,0,0,0.4));
+    transition: opacity var(--transition-smooth);
+}
+
+.icon-light {
+    opacity: 1;
+}
+
+.icon-dark {
+    position: absolute; /* Stack directly on top of lights on */
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Dark mode state */
+.hero.is-dark .icon-light {
+    opacity: 0;
+}
+
+.hero.is-dark .icon-dark {
+    opacity: 1;
+}
+
+/* Arrow keeps floating in both modes */
+.theme-indicator .icon-arrow {
+    width: clamp(18px, 2vw, 24px);
+    height: auto;
+    margin-right: 15px; /* Visual center adjustment under text */
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.6));
+    animation: floatingArrow 2s ease-in-out infinite;
+    transform-origin: center;
+}
+
+/* --- Carousel Indicators --- */
+.carousel-indicators {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeSlideUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(250, 251, 246, 0.6);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.dot:hover {
+    background: rgba(250, 251, 246, 0.4);
+    transform: scale(1.2);
+}
+
+.dot.active {
+    background: var(--accent-green);
+    border-color: var(--accent-green);
+    transform: scale(1.2);
+}
+
+/* --- Keyframe Animations --- */
+@keyframes slightZoom {
+    0% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@keyframes fadeSlideRight {
+    0% { opacity: 0; transform: translateX(-30px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeSlideDown {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeSlideUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes floatingArrow {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(4px, 4px); }
+}
+
+@keyframes lowkeyPulse {
+    0%, 85%, 100% { opacity: 0; }
+    92.5% { opacity: 0.15; } /* Subtly highlight the shape */
+}
+
+/* --- About Us Section (Revealed at Scroll End) --- */
+.about-us-content {
+    position: absolute;
+    inset: 0;
+    padding: 140px 80px 60px 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 15;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.about-us-content.is-active {
+    pointer-events: auto;
+}
+
+.about-us-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+}
+
+.about-us-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(17, 17, 17, 0.5); /* Overlay to make text legible */
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+}
+
+.brutalist-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    width: 100%;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.about-title-wrapper {
+    grid-column: 1 / -1;
+    padding: 20px 0;
+    overflow: hidden;
+}
+
+.massive-text {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3rem, 7vw, 7rem);
+    font-weight: 800;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    color: var(--text-color);
+    text-transform: uppercase;
+    margin: 0;
+    transform: translateY(120%);
+    opacity: 0;
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.2s ease;
+}
+
+.about-text-wrapper {
+    grid-column: 1 / -1;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 30px;
+}
+
+.elegant-body {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(1.2rem, 1.6vw, 2rem);
+    font-weight: 300;
+    line-height: 1.5;
+    color: var(--text-color);
+    letter-spacing: 0.02em;
+    transform: translateX(-50px);
+    opacity: 0;
+    transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s, opacity 1s ease 0.2s;
+}
+
+/* --- Reveal Stagger Mechanics --- */
+.about-us-content.is-active .about-us-video,
+.about-us-content.is-active .about-us-overlay {
+    opacity: 1;
+}
+
+.about-us-content.is-active .massive-text {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.about-us-content.is-active .elegant-body {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+@media (max-width: 900px) {
+    .about-text-wrapper {
+        padding: 20px 0;
+    }
+    .about-title-wrapper {
+        padding: 20px 0;
+    }
+}
+
+/* Logo Color Inversion Class */
+.logo-mark.invert {
+    filter: invert(1) brightness(0.1) drop-shadow(0 2px 5px rgba(255,255,255,0.6));
+}
+
+/* --- Mobile / Tablet Responsiveness --- */
+@media (max-width: 900px) {
+    .content { padding: 40px; }
+    .header { top: 40px; left: 40px; right: 40px; }
+    .side-nav { left: 40px; }
+    .bottom-brand { bottom: 40px; left: 40px; }
+    .theme-indicator { bottom: 40px; right: 40px; }
+    .carousel-indicators { bottom: 40px; }
+    
+    .about-us-content { padding: 40px; }
+}
+
+@media (max-width: 600px) {
+    .content { padding: 25px; }
+    
+    .header { top: 25px; left: 25px; right: 25px; }
+    .logo-mark { width: 80px; }
+    .btn-join { padding: 10px 24px; font-size: 0.8rem; }
+    
+    .side-nav { left: 25px; gap: 15px; }
+    .side-nav a { font-size: 1.1rem; letter-spacing: 1px; }
+    
+    .bottom-brand { bottom: 85px; left: 25px; }
+    .theme-indicator { bottom: 85px; right: 25px; }
+    
+    .carousel-indicators { bottom: 30px; }
+    
+    .about-us-content { padding: 25px; }
+}
+
+/* --- Scroll Animation State --- */
+/* Remove initial load animations once user scrolls so we can override inline */
+.is-scrolled .header,
+.is-scrolled .side-nav a,
+.is-scrolled .bottom-brand,
+.is-scrolled .theme-indicator,
+.is-scrolled .carousel-indicators {
+    animation: none !important;
+}
+
+/* Ensure elements are fully visible and untranslated before JS inline styles wipe them */
+.is-scrolled .header,
+.is-scrolled .bottom-brand,
+.is-scrolled .theme-indicator,
+.is-scrolled .carousel-indicators {
+    opacity: 1;
+    transform: none; 
+}
+.is-scrolled .side-nav a {
+    opacity: 1;
+    /* Avoid overwriting transform so hover effects stay intact */
+}
+
+/* White Overlay for End of Scroll */
+.bg-white-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: #FAFBF6;
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+}
