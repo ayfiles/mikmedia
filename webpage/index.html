@@ -14,8 +14,9 @@
     <!-- Using Syne for brutalist architectural display headers -->
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="style.css?v=12">
+    <link rel="stylesheet" href="style.css?v=13">
 </head>
+<body id="top">
     <div class="hero-sticky-container">
         <main class="hero">
             <!-- Background Layers -->
@@ -33,27 +34,36 @@
             
             <!-- Foreground Content Layer -->
             <div class="content">
-                <!-- Header: Logo & Join Button -->
+                <!-- Header: Logo, Language Switch & Join Button -->
                 <header class="header">
-                    <img src="assets/logo%20mark.svg" alt="Mikmedia Mark" class="logo-mark">
-                    <a href="#join" class="btn-join">JOIN</a>
+                    <a href="#top" class="logo-link">
+                        <img src="assets/logo%20mark.svg" alt="Mikmedia Mark" class="logo-mark">
+                    </a>
+                    <div class="header-actions">
+                        <div class="lang-switch-container de-active" id="lang-switch">
+                            <div class="lang-switch-blob"></div>
+                            <button class="lang-btn" data-lang="en">EN</button>
+                            <button class="lang-btn active" data-lang="de">DE</button>
+                        </div>
+                        <a href="#join" class="btn-join" data-i18n="true" data-en="JOIN" data-de="MITMACHEN">MITMACHEN</a>
+                    </div>
                 </header>
 
                 <!-- Vertical Navigation -->
                 <nav class="side-nav">
-                    <a href="#about"><span class="slash">/</span> ABOUT US</a>
-                    <a href="#design"><span class="slash">/</span> DESIGN</a>
-                    <a href="#code"><span class="slash">/</span> CODE</a>
-                    <a href="#solutions"><span class="slash">/</span> SOLUTIONS</a>
-                    <a href="#contact"><span class="slash">/</span> CONTACT</a>
+                    <a href="#about"><span class="slash">/</span> <span data-i18n="true" data-en="ABOUT US" data-de="ÜBER UNS">ÜBER UNS</span></a>
+                    <a href="#design"><span class="slash">/</span> <span data-i18n="true" data-en="DESIGN" data-de="DESIGN">DESIGN</span></a>
+                    <a href="#code"><span class="slash">/</span> <span data-i18n="true" data-en="CODE" data-de="CODE">CODE</span></a>
+                    <a href="#solutions"><span class="slash">/</span> <span data-i18n="true" data-en="SOLUTIONS" data-de="LÖSUNGEN">LÖSUNGEN</span></a>
+                    <a href="#contact"><span class="slash">/</span> <span data-i18n="true" data-en="CONTACT" data-de="KONTAKT">KONTAKT</span></a>
                 </nav>
 
                 <!-- Bottom Left Branding -->
                 <div class="bottom-brand">
                     <img src="assets/mikmedia-copyright.svg" alt="Mikmedia Strategic Design & Code" class="logo-full">
                     <p class="brand-text">
-                        <span class="slash">//</span> STRATEGIC DESIGN & CODE<br>
-                        MANUFACTURED IN GERMANY
+                        <span class="slash">//</span> <span data-i18n="true" data-en="STRATEGIC DESIGN & CODE" data-de="STRATEGISCHES DESIGN & CODE">STRATEGISCHES DESIGN & CODE</span><br>
+                        <span data-i18n="true" data-en="MANUFACTURED IN GERMANY" data-de="HERGESTELLT IN DEUTSCHLAND">HERGESTELLT IN DEUTSCHLAND</span>
                     </p>
                 </div>
 
@@ -66,15 +76,6 @@
                     <img src="assets/arrow.svg" alt="Arrow" class="icon-arrow">
                 </div>
 
-                <!-- Carousel Pagination -->
-                <div class="carousel-indicators" role="tablist">
-                    <button class="dot" aria-label="Slide 1" role="tab"></button>
-                    <button class="dot" aria-label="Slide 2" role="tab"></button>
-                    <button class="dot active" aria-label="Slide 3" aria-selected="true" role="tab"></button>
-                    <button class="dot" aria-label="Slide 4" role="tab"></button>
-                    <button class="dot" aria-label="Slide 5" role="tab"></button>
-                </div>
-
                 <!-- About Us Revealed Content -->
                 <div class="about-us-content">
                     <div class="about-us-video-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;">
@@ -84,23 +85,152 @@
                     <div class="about-us-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(17, 17, 17, 0.5); z-index: -1;"></div>
                     <div class="brutalist-grid">
                         <div class="about-title-wrapper">
-                            <h2 class="massive-text">WE ARE<br>MIKMEDIA</h2>
+                            <h2 class="massive-text" data-i18n="true" data-en="WE ARE<br>MIKMEDIA" data-de="WIR SIND<br>MIKMEDIA">WIR SIND<br>MIKMEDIA</h2>
                         </div>
                         <div class="about-text-wrapper">
-                            <p class="elegant-body">
-                                Mikmedia fuses strategic design with rigorous German engineering. We craft digital experiences that don't just look premium—they perform flawlessly.
+                            <p class="elegant-body" data-i18n="true" data-en="Mikmedia fuses strategic design with uncompromising technical precision. We craft digital experiences that don't just look premium—they perform flawlessly." data-de="Mikmedia vereint strategisches Design mit kompromissloser technischer Präzision. Wir erschaffen digitale Erlebnisse, die nicht nur erstklassig aussehen, sondern auch fehlerfrei funktionieren.">
+                                Mikmedia vereint strategisches Design mit kompromissloser technischer Präzision. Wir erschaffen digitale Erlebnisse, die nicht nur erstklassig aussehen, sondern auch fehlerfrei funktionieren.
                             </p>
-                            <p class="elegant-body">
-                                Every pixel is deliberate. Every line of code holds purpose.
+                            <p class="elegant-body" data-i18n="true" data-en="Every pixel is deliberate. Every line of code holds purpose." data-de="Jeder Pixel ist wohlüberlegt. Jede Zeile Code hat ihren Sinn.">
+                                Jeder Pixel ist wohlüberlegt. Jede Zeile Code hat ihren Sinn.
                             </p>
                         </div>
                     </div>
-                </div>
-            </div>
+                </div> <!-- End About Us Content -->
+                
+                <!-- Design Revealed Content -->
+                <div class="design-content">
+                    <div class="design-bg-overlay"></div>
+                    <div class="design-inner">
+                        <div class="design-header-wrapper">
+                            <h2 class="massive-text-design" data-i18n="true" data-en="DESIGN" data-de="DESIGN">DESIGN</h2>
+                            <p class="design-intro-text" data-i18n="true" data-en="Mikmedia provides a comprehensive suite of premium design services, led and executed by experienced industry art directors and visionary creators. We translate strategic intent into unforgettable aesthetic experiences." data-de="Mikmedia bietet ein umfassendes Portfolio an erstklassigen Design-Dienstleistungen, geleitet und ausgeführt von erfahrenen Art Directoren und visionären Gestaltern der Branche. Wir übersetzen strategische Absichten in unvergessliche ästhetische Erlebnisse.">
+                                Mikmedia bietet ein umfassendes Portfolio an erstklassigen Design-Dienstleistungen, geleitet und ausgeführt von erfahrenen Art Directoren und visionären Gestaltern der Branche. Wir übersetzen strategische Absichten in unvergessliche ästhetische Erlebnisse.
+                            </p>
+                        </div>
+                        <div class="glass-cards-container">
+                            <div class="glass-card g-card-1">
+                                <div class="glass-card-content">
+                                    <h3 data-i18n="true" data-en="Brand Design" data-de="Markendesign">Markendesign</h3>
+                                    <p data-i18n="true" data-en="Identity systems that defy the ordinary. From bold conceptualization to meticulous execution, we craft brands that demand attention." data-de="Identitätssysteme, die dem Gewöhnlichen trotzen. Von mutiger Konzeptualisierung bis zur akribischen Umsetzung kreieren wir Marken, die Aufmerksamkeit erregen.">Identitätssysteme, die dem Gewöhnlichen trotzen. Von mutiger Konzeptualisierung bis zur akribischen Umsetzung kreieren wir Marken, die Aufmerksamkeit erregen.</p>
+                                </div>
+                            </div>
+                            <div class="glass-card g-card-2">
+                                <div class="glass-card-content">
+                                    <h3 data-i18n="true" data-en="AI Visuals" data-de="KI-Visuals">KI-Visuals</h3>
+                                    <p data-i18n="true" data-en="Pioneering the intersection of artificial intelligence and high-end artistry to generate unimaginable aesthetic realities." data-de="Wegweisend an der Schnittstelle von Künstlicher Intelligenz und High-End-Kunstfertigkeit, um unvorstellbare ästhetische Realitäten zu erschaffen.">Wegweisend an der Schnittstelle von Künstlicher Intelligenz und High-End-Kunstfertigkeit, um unvorstellbare ästhetische Realitäten zu erschaffen.</p>
+                                </div>
+                            </div>
+                            <div class="glass-card g-card-3">
+                                <div class="glass-card-content">
+                                    <h3 data-i18n="true" data-en="Motion Design" data-de="Motion Design">Motion Design</h3>
+                                    <p data-i18n="true" data-en="Fluid, physics-defying animations that breathe life into digital canvases and command visual momentum." data-de="Fließende, physik-trotzende Animationen, die digitalen Leinwänden Leben einhauchen und visuelle Dynamik erzeugen.">Fließende, physik-trotzende Animationen, die digitalen Leinwänden Leben einhauchen und visuelle Dynamik erzeugen.</p>
+                                </div>
+                            </div>
+                            <div class="glass-card g-card-4">
+                                <div class="glass-card-content">
+                                    <h3 data-i18n="true" data-en="Spatial & UI" data-de="Spatial & UI">Spatial & UI</h3>
+                                    <p data-i18n="true" data-en="Immersive interfaces blurring the line between software and architecture." data-de="Immersive Interfaces, die die Grenze zwischen Software und Architektur verschwimmen lassen.">Immersive Interfaces, die die Grenze zwischen Software und Architektur verschwimmen lassen.</p>
+                                </div>
+                            </div>
+                            <div class="glass-card g-card-special">
+                                <div class="glass-card-content special-content">
+                                    <div class="plus-100">
+                                        <span class="plus">+</span><span class="number">100</span>
+                                    </div>
+                                    <p class="special-text" data-i18n="true" data-en="Tailored Design Services &amp; Consulting" data-de="Maßgeschneiderte Design-Services &amp; Beratung">Maßgeschneiderte Design-Services &amp; Beratung</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- End Design Content -->
+
+                <!-- Code Revealed Content -->
+                <div class="code-content">
+                    <div class="code-bg-overlay"></div>
+                    <div class="code-inner">
+                        <div class="code-header-wrapper">
+                            <h2 class="massive-text-code" data-i18n="true" data-en="CODE" data-de="CODE">CODE</h2>
+                            <p class="code-intro-text" data-i18n="true" data-en="Mikmedia delivers robust code and advanced IT solutions. From scalable websites and custom software to seamless AI implementations, automations, and mobile app development." data-de="Mikmedia liefert robusten Code und fortschrittliche IT-Lösungen. Von skalierbaren Websites und individueller Software bis hin zu nahtlosen KI-Implementierungen, Automatisierungen und der Entwicklung von mobilen Apps.">
+                                Mikmedia liefert robusten Code und fortschrittliche IT-Lösungen. Von skalierbaren Websites und individueller Software bis hin zu nahtlosen KI-Implementierungen, Automatisierungen und der Entwicklung von mobilen Apps.
+                            </p>
+                        </div>
+                        <div class="terminal-cards-container">
+                            <div class="terminal-card t-card-1">
+                                <div class="terminal-header">
+                                    <div class="dots-wrapper"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+                                    <span class="terminal-title">websites.sh</span>
+                                </div>
+                                <div class="terminal-body">
+                                    <p class="prompt"><span class="prompt-arrow">❯</span> <span class="cmd">build --type="websites"</span></p>
+                                    <p class="output" data-i18n="true" data-en="High-performance, scalable web platforms crafted for flawless user experiences." data-de="Leistungsstarke, skalierbare Web-Plattformen für makellose Nutzererlebnisse.">Leistungsstarke, skalierbare Web-Plattformen für makellose Nutzererlebnisse.</p>
+                                </div>
+                            </div>
+                            <div class="terminal-card t-card-2">
+                                <div class="terminal-header">
+                                    <div class="dots-wrapper"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+                                    <span class="terminal-title">software.sh</span>
+                                </div>
+                                <div class="terminal-body">
+                                    <p class="prompt"><span class="prompt-arrow">❯</span> <span class="cmd">deploy --custom="software"</span></p>
+                                    <p class="output" data-i18n="true" data-en="Bespoke software solutions solving complex business challenges with clean architecture." data-de="Maßgeschneiderte Softwarelösungen, die komplexe geschäftliche Herausforderungen mit sauberer Architektur lösen.">Maßgeschneiderte Softwarelösungen, die komplexe geschäftliche Herausforderungen mit sauberer Architektur lösen.</p>
+                                </div>
+                            </div>
+                            <div class="terminal-card t-card-3">
+                                <div class="terminal-header">
+                                    <div class="dots-wrapper"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+                                    <span class="terminal-title">ai-automation.sh</span>
+                                </div>
+                                <div class="terminal-body">
+                                    <p class="prompt"><span class="prompt-arrow">❯</span> <span class="cmd">init --module="ai-automation"</span></p>
+                                    <p class="output" data-i18n="true" data-en="Intelligent AI implementations and workflow automations to accelerate scaling." data-de="Intelligente KI-Implementierungen und Workflow-Automatisierungen zur Beschleunigung der Skalierung.">Intelligente KI-Implementierungen und Workflow-Automatisierungen zur Beschleunigung der Skalierung.</p>
+                                </div>
+                            </div>
+                            <div class="terminal-card t-card-4">
+                                <div class="terminal-header">
+                                    <div class="dots-wrapper"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+                                    <span class="terminal-title">apps.sh</span>
+                                </div>
+                                <div class="terminal-body">
+                                    <p class="prompt"><span class="prompt-arrow">❯</span> <span class="cmd">compile --target="mobile-apps"</span></p>
+                                    <p class="output" data-i18n="true" data-en="Native and cross-platform app development for iOS and Android." data-de="Native und plattformübergreifende App-Entwicklung für iOS und Android.">Native und plattformübergreifende App-Entwicklung für iOS und Android.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- End Code Content -->
+
+                <!-- Solutions Revealed Content -->
+                <div class="solutions-content">
+                    <div class="solutions-bg-overlay"></div>
+                    <div class="solutions-inner">
+                        <div class="solutions-header-wrapper">
+                            <h2 class="massive-text-solutions" data-i18n="true" data-en="SOLUTIONS" data-de="LÖSUNGEN">LÖSUNGEN</h2>
+                            <p class="solutions-intro-text" data-i18n="true" data-en="End-to-end digital mastery. We bridge the gap between visionary design and robust technical ecosystems to deliver future-proof solutions." data-de="Umfassende digitale Expertise. Wir schlagen die Brücke zwischen visionärem Design und robusten technischen Ökosystemen, um zukunftssichere Lösungen zu liefern.">
+                                Umfassende digitale Expertise. Wir schlagen die Brücke zwischen visionärem Design und robusten technischen Ökosystemen, um zukunftssichere Lösungen zu liefern.
+                            </p>
+                        </div>
+                        <div class="solutions-cards-container">
+                            <div class="s-card s-card-1">
+                                <h3 data-i18n="true" data-en="E-Commerce Platforms" data-de="E-Commerce-Plattformen">E-Commerce-Plattformen</h3>
+                                <p data-i18n="true" data-en="High-converting, scalable architectures configured for global transactional volume." data-de="Konversionsstarke, skalierbare Architekturen, konfiguriert für globales Transaktionsvolumen.">Konversionsstarke, skalierbare Architekturen, konfiguriert für globales Transaktionsvolumen.</p>
+                            </div>
+                            <div class="s-card s-card-2">
+                                <h3 data-i18n="true" data-en="Enterprise Systems" data-de="Unternehmenssysteme">Unternehmenssysteme</h3>
+                                <p data-i18n="true" data-en="Custom operational software driving internal efficiency and operational supremacy." data-de="Maßgeschneiderte Betriebssoftware zur Steigerung der internen Effizienz und operativen Überlegenheit.">Maßgeschneiderte Betriebssoftware zur Steigerung der internen Effizienz und operativen Überlegenheit.</p>
+                            </div>
+                            <div class="s-card s-card-3">
+                                <h3 data-i18n="true" data-en="AI Integrations" data-de="KI-Integrationen">KI-Integrationen</h3>
+                                <p data-i18n="true" data-en="Deploying advanced machine learning models into live environments for profound automation." data-de="Einsatz fortschrittlicher maschineller Lernmodelle in Live-Umgebungen für tiefgreifende Automatisierung.">Einsatz fortschrittlicher maschineller Lernmodelle in Live-Umgebungen für tiefgreifende Automatisierung.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- End Solutions Content -->
+            </div> <!-- End .content -->
         </main>
         <div class="hero-scroll-spacer"></div>
     </div>
 
-    <script src="script.js?v=5"></script>
+    <script src="script.js?v=8"></script>
 </body>
 </html>

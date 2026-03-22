@@ -1,34 +1,4 @@
-/**
- * script.js - Mikmedia Hero Section
- * Handles basic interactivity and micro-animations.
- */
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Basic Carousel Dot Interaction (Mock functionality)
-    const dots = document.querySelectorAll('.dot');
-    
-    dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => {
-            // Remove active class from all dots
-            dots.forEach(d => {
-                d.classList.remove('active');
-                d.setAttribute('aria-selected', 'false');
-            });
-            
-            // Add active class to clicked dot
-            dot.classList.add('active');
-            dot.setAttribute('aria-selected', 'true');
-            
-            // In a real application, this would trigger a background crossfade or slider movement
-            console.log(`Slide ${index + 1} selected`);
-            // Optional: add a slight CSS transform pulse to the image when switching dots
-            const bgWrapper = document.querySelector('.bg-wrapper');
-            bgWrapper.style.animation = 'none';
-            void bgWrapper.offsetWidth; /* Trigger reflow */
-            bgWrapper.style.animation = 'slightZoom 10s ease-out forwards';
-        });
-    });
-
     const hero = document.querySelector('.hero');
 
     // Pixel-perfect Lava Lamp Hitbox detection
@@ -156,145 +126,339 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isOverHitbox(e.clientX, e.clientY)) {
             hero.classList.toggle('is-dark');
         }
-    }); // Close click listener
-
-    // --- Scroll Animation Logic ---
-    const heroStickyContainer = document.querySelector('.hero-sticky-container');
-    const heroVideo = document.getElementById('hero-videobg');
-    const elementsToWipe = document.querySelectorAll('.header .btn-join, .bottom-brand, .theme-indicator, .carousel-indicators');
-    
-    let ticking = false;
-
-    window.addEventListener('scroll', () => {
-        if (!ticking) {
-            window.requestAnimationFrame(() => {
-                updateScrollAnimation();
-                ticking = false;
-            });
-            ticking = true;
-        }
     });
 
+    // --- High-End Scrolling Choreography Engine ---
+    const heroVideo = document.getElementById('hero-videobg');
+    const heroStickyContainer = document.querySelector('.hero-sticky-container');
+    const bgImages = document.querySelectorAll('.bg-image');
+    const logoMark = document.querySelector('.logo-mark');
+    
+    // Grab all elements that need to be wiped out initially
+    const headerActions = document.querySelector('.header-actions');
+    const sideNavLinks = document.querySelectorAll('.side-nav a');
+    const bottomBrand = document.querySelector('.bottom-brand');
+    const themeIndicator = document.querySelector('.theme-indicator');
+    const carouselIndicators = document.querySelector('.carousel-indicators');
+    const inlineElements = [headerActions, bottomBrand, themeIndicator, carouselIndicators];
+
+    let lastProgress = 0;
+    let isAutoScrolling = false;
+
     function updateScrollAnimation() {
-        if (!heroStickyContainer || !heroVideo) return;
-
+        if (!heroStickyContainer) return;
+        
         const rect = heroStickyContainer.getBoundingClientRect();
-        const maxScroll = rect.height - window.innerHeight;
-        let progress = -rect.top / maxScroll;
-        progress = Math.max(0, Math.min(1, progress));
+        const scrolled = -rect.top;
+        const totalScrollable = rect.height - window.innerHeight;
+        
+        let progress = scrolled / totalScrollable;
+        if (progress < 0) progress = 0;
+        if (progress > 1) progress = 1;
 
-        // Manage 'is-scrolled' state
+        const scrollingDown = progress > lastProgress;
+        const scrollingUp = progress < lastProgress;
+
         if (progress > 0) {
-            heroStickyContainer.classList.add('is-scrolled');
+            document.body.classList.add('is-scrolled');
         } else {
-            heroStickyContainer.classList.remove('is-scrolled');
+            document.body.classList.remove('is-scrolled');
         }
 
-        // Fade in video
-        if (progress > 0.01) {
+        // --- Auto Scroll Snapping Logic ---
+        if (!isAutoScrolling) {
+            if (scrollingDown) {
+                if (lastProgress < 0.20 && progress >= 0.20 && progress < 0.28) {
+                    scrollToProgress(0.31, '#about');
+                } else if (lastProgress < 0.40 && progress >= 0.40 && progress < 0.48) {
+                    scrollToProgress(0.51, '#design');
+                } else if (lastProgress < 0.60 && progress >= 0.60 && progress < 0.68) {
+                    scrollToProgress(0.71, '#code');
+                } else if (lastProgress < 0.80 && progress >= 0.80 && progress < 0.88) {
+                    scrollToProgress(1.0, '#solutions');
+                }
+            } else if (scrollingUp) {
+                if (lastProgress > 0.20 && progress <= 0.20 && progress > 0.12) {
+                    scrollToProgress(0, '#top');
+                } else if (lastProgress > 0.40 && progress <= 0.40 && progress > 0.32) {
+                    scrollToProgress(0.31, '#about');
+                } else if (lastProgress > 0.60 && progress <= 0.60 && progress > 0.52) {
+                    scrollToProgress(0.51, '#design');
+                } else if (lastProgress > 0.80 && progress <= 0.80 && progress > 0.72) {
+                    scrollToProgress(0.71, '#code');
+                }
+            }
+        }
+
+        // Activate hero video only when scrolling starts (0.05 to 0.20)
+        if (progress > 0.05 && progress < 0.28) {
             heroVideo.classList.add('scrolling-active');
+            bgImages.forEach(img => img.style.opacity = '0');
         } else {
             heroVideo.classList.remove('scrolling-active');
+            if (progress <= 0.05) {
+                bgImages.forEach(img => img.style.opacity = '');
+            }
         }
 
-        // Scrub video playback
+        let videoProgress = progress / 0.28;
+        if (videoProgress > 1) videoProgress = 1;
+        
         if (heroVideo.duration && !isNaN(heroVideo.duration)) {
-            heroVideo.currentTime = progress * heroVideo.duration;
+             heroVideo.currentTime = videoProgress * heroVideo.duration;
         } else if (heroVideo.readyState >= 1) {
-             // Fallback if readyState is sufficient but duration was checked too early
-             heroVideo.currentTime = progress * heroVideo.duration;
+             heroVideo.currentTime = videoProgress * heroVideo.duration;
         }
 
-        // Calculate wipe progress for the last 20%
-        const wipeStart = 0.8;
+        const wipeStart = 0.10;
+        const wipeEnd = 0.18;
         let wipeProgress = 0;
         if (progress > wipeStart) {
-            wipeProgress = (progress - wipeStart) / (1 - wipeStart);
+            wipeProgress = Math.min((progress - wipeStart) / (wipeEnd - wipeStart), 1);
         }
 
-        // Apply wipe transitions
-        elementsToWipe.forEach(el => {
-            if (wipeProgress > 0 || progress > 0) {
-                // Disable transition during scroll to avoid lag
-                el.style.transition = 'none';
-            } else {
-                el.style.transition = '';
+        inlineElements.forEach(el => {
+            if (el) {
+                el.style.opacity = 1 - wipeProgress;
+                el.style.transform = `translateX(-${wipeProgress * 100}px)`;
             }
-            
-            el.style.translate = `0 -${wipeProgress * 10}vh`;
-            el.style.opacity = 1 - wipeProgress;
         });
+        
+        const sideNavLinks = document.querySelectorAll('.side-nav a');
+        sideNavLinks.forEach(l => l.classList.remove('active'));
 
-        // Fade background into white at the very end (90% to 100%)
         const whiteOverlay = document.querySelector('.bg-white-overlay');
         if (whiteOverlay) {
             let whiteProgress = 0;
-            if (progress > 0.9) {
-                whiteProgress = (progress - 0.9) / 0.1;
+            if (progress > 0.16 && progress <= 0.20) {
+                whiteProgress = (progress - 0.16) / 0.04;
+            } else if (progress > 0.20) {
+                whiteProgress = 1;
             }
             whiteOverlay.style.opacity = whiteProgress;
         }
 
-        // Reveal About Us Content, highlight nav (92% to 100%)
-        const aboutUsContent = document.querySelector('.about-us-content');
-        const logoMark = document.querySelector('.logo-mark');
-        const sideNav = document.querySelector('.side-nav');
         const navAboutLink = document.querySelector('.side-nav a[href="#about"]');
+        const navDesignLink = document.querySelector('.side-nav a[href="#design"]');
+        const navCodeLink = document.querySelector('.side-nav a[href="#code"]');
+        const navSolutionsLink = document.querySelector('.side-nav a[href="#solutions"]');
         
-        if (aboutUsContent && logoMark) {
+        const aboutUsContent = document.querySelector('.about-us-content');
+        const designContent = document.querySelector('.design-content');
+        const codeContent = document.querySelector('.code-content');
+        const solutionsContent = document.querySelector('.solutions-content');
+        
+        // About Us (0.20 to 0.40)
+        if (aboutUsContent) {
             let aboutProgress = 0;
-            if (progress > 0.92) {
-                aboutProgress = (progress - 0.92) / 0.08;
+            let aboutTranslateY = 30;
+            
+            if (progress > 0.20 && progress <= 0.28) { // Entering
+                aboutProgress = (progress - 0.20) / 0.08;
+                aboutTranslateY = 30 - (aboutProgress * 30);
+                aboutUsContent.classList.add('is-active');
+            } else if (progress > 0.28 && progress <= 0.34) { // Resting
+                aboutProgress = 1;
+                aboutTranslateY = 0;
                 aboutUsContent.classList.add('is-active');
                 if (navAboutLink) navAboutLink.classList.add('active');
+            } else if (progress > 0.34 && progress <= 0.40) { // Exiting
+                const exitProgress = (progress - 0.34) / 0.06;
+                aboutProgress = 1 - exitProgress;
+                aboutTranslateY = -(exitProgress * 30);
+                aboutUsContent.classList.add('is-active');
             } else {
                 aboutUsContent.classList.remove('is-active');
-                if (navAboutLink) navAboutLink.classList.remove('active');
             }
             
-            // Slide up elegantly
-            aboutUsContent.style.translate = `0 ${100 - (aboutProgress * 100)}px`;
+            aboutUsContent.style.translate = `0 ${aboutTranslateY}vh`;
             aboutUsContent.style.opacity = aboutProgress;
         }
+
+        // Design Content (0.40 to 0.60)
+        let isDesignActive = false;
+        if (designContent) {
+            let designProgress = 0;
+            let designTranslateY = 30;
+            
+            if (progress > 0.40 && progress <= 0.48) { // Entering
+                designProgress = (progress - 0.40) / 0.08;
+                designTranslateY = 30 - (designProgress * 30);
+                designContent.classList.add('is-active');
+                isDesignActive = true;
+            } else if (progress > 0.48 && progress <= 0.54) { // Resting
+                designProgress = 1;
+                designTranslateY = 0;
+                designContent.classList.add('is-active');
+                if (navDesignLink) navDesignLink.classList.add('active');
+                isDesignActive = true;
+            } else if (progress > 0.54 && progress <= 0.60) { // Exiting
+                const exitProgress = (progress - 0.54) / 0.06;
+                designProgress = 1 - exitProgress;
+                designTranslateY = -(exitProgress * 30);
+                designContent.classList.add('is-active');
+                isDesignActive = true;
+            } else {
+                designContent.classList.remove('is-active');
+            }
+            
+            designContent.style.translate = `0 ${designTranslateY}vh`;
+            designContent.style.opacity = designProgress;
+        }
+
+        // Code Content (0.60 to 0.80)
+        if (codeContent) {
+            let codeProgress = 0;
+            let codeTranslateY = 30;
+            
+            if (progress > 0.60 && progress <= 0.68) { // Entering
+                codeProgress = (progress - 0.60) / 0.08;
+                codeTranslateY = 30 - (codeProgress * 30);
+                codeContent.classList.add('is-active');
+            } else if (progress > 0.68 && progress <= 0.74) { // Resting
+                codeProgress = 1;
+                codeTranslateY = 0;
+                codeContent.classList.add('is-active');
+                if (navCodeLink) navCodeLink.classList.add('active');
+            } else if (progress > 0.74 && progress <= 0.80) { // Exiting
+                const exitProgress = (progress - 0.74) / 0.06;
+                codeProgress = 1 - exitProgress;
+                codeTranslateY = -(exitProgress * 30);
+                codeContent.classList.add('is-active');
+            } else {
+                codeContent.classList.remove('is-active');
+            }
+            
+            codeContent.style.translate = `0 ${codeTranslateY}vh`;
+            codeContent.style.opacity = codeProgress;
+        }
+
+        // Solutions Content (0.80 to 1.0)
+        let isSolutionsActive = false;
+        if (solutionsContent) {
+            let solProgress = 0;
+            let solTranslateY = 30;
+            
+            if (progress > 0.80 && progress <= 0.88) { // Entering
+                solProgress = (progress - 0.80) / 0.08;
+                solTranslateY = 30 - (solProgress * 30);
+                solutionsContent.classList.add('is-active');
+                isSolutionsActive = true;
+            } else if (progress > 0.88) { // Resting
+                solProgress = 1;
+                solTranslateY = 0;
+                solutionsContent.classList.add('is-active');
+                if (navSolutionsLink) navSolutionsLink.classList.add('active');
+                isSolutionsActive = true;
+            } else {
+                solutionsContent.classList.remove('is-active');
+            }
+            
+            solutionsContent.style.translate = `0 ${solTranslateY}vh`;
+            solutionsContent.style.opacity = solProgress;
+        }
+            
+        // Invert globally fixed items since background is light in Design and Solutions sections
+        const sideNav = document.querySelector('.side-nav');
+        if (isDesignActive || isSolutionsActive) {
+            if (logoMark) logoMark.classList.add('invert');
+            if (sideNav) sideNav.classList.add('invert');
+        } else {
+            if (progress < 0.20 && !hero.classList.contains('is-dark')) {
+                if (logoMark) logoMark.classList.remove('invert');
+                if (sideNav) sideNav.classList.remove('invert');
+            } else if (progress >= 0.20) {
+                if (logoMark) logoMark.classList.remove('invert');
+                if (sideNav) sideNav.classList.remove('invert');
+            }
+        }
+
+        lastProgress = progress;
     }
+
+    window.addEventListener('scroll', () => {
+        window.requestAnimationFrame(updateScrollAnimation);
+    });
     
-    // --- Smooth Scroll Navigation ---
+    function scrollToProgress(targetProgress, sectionHash) {
+        if (isAutoScrolling) return; 
+        isAutoScrolling = true;
+        
+        const rect = heroStickyContainer.getBoundingClientRect();
+        const containerTop = rect.top + window.scrollY; 
+        const totalScrollable = rect.height - window.innerHeight;
+        
+        const startY = window.scrollY;
+        const targetY = containerTop + (targetProgress * totalScrollable);
+        const distance = targetY - startY;
+        
+        let startTime = null;
+        const duration = Math.min(Math.max(Math.abs(distance) * 1.5, 1200), 3500);
+        
+        function easeInOutCubic(t) {
+            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+        
+        function animationStep(currentTime) {
+            if (startTime === null) startTime = currentTime;
+            const timeElapsed = currentTime - startTime;
+            let p = timeElapsed / duration;
+            if (p > 1) p = 1;
+            
+            const ease = easeInOutCubic(p);
+            window.scrollTo(0, startY + distance * ease);
+            
+            if (timeElapsed < duration) {
+                window.requestAnimationFrame(animationStep);
+            } else {
+                window.scrollTo(0, startY + distance);
+                isAutoScrolling = false;
+                if (sectionHash) {
+                    window.history.pushState(null, null, sectionHash);
+                }
+            }
+        }
+        
+        window.requestAnimationFrame(animationStep);
+    }
+
     const aboutLink = document.querySelector('a[href="#about"]');
     if (aboutLink) {
         aboutLink.addEventListener('click', (e) => {
             e.preventDefault();
-            
-            if (!heroStickyContainer) return;
+            scrollToProgress(0.31, '#about');
+        });
+    }
 
-            const startY = window.scrollY;
-            // The maximum we can scroll the container
-            const maxScroll = heroStickyContainer.getBoundingClientRect().height - window.innerHeight;
-            const targetY = maxScroll; 
-            const distance = targetY - startY;
-            const duration = 2500; // 2.5 seconds for a cinematic slow scrub
-            let startTime = null;
-            
-            function easeInOutCubic(t) {
-                return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-            }
-            
-            function animationStep(currentTime) {
-                if (startTime === null) startTime = currentTime;
-                const timeElapsed = currentTime - startTime;
-                let progress = timeElapsed / duration;
-                if (progress > 1) progress = 1;
-                
-                const ease = easeInOutCubic(progress);
-                window.scrollTo(0, startY + distance * ease);
-                
-                if (timeElapsed < duration) {
-                    window.requestAnimationFrame(animationStep);
-                } else {
-                    window.history.pushState(null, null, '#about');
-                }
-            }
-            
-            window.requestAnimationFrame(animationStep);
+    const designLink = document.querySelector('a[href="#design"]');
+    if (designLink) {
+        designLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            scrollToProgress(0.51, '#design');
+        });
+    }
+
+    const codeLink = document.querySelector('a[href="#code"]');
+    if (codeLink) {
+        codeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            scrollToProgress(0.71, '#code');
+        });
+    }
+
+    const solutionsLink = document.querySelector('a[href="#solutions"]');
+    if (solutionsLink) {
+        solutionsLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            scrollToProgress(1.0, '#solutions');
+        });
+    }
+
+    const logoLink = document.querySelector('.logo-link');
+    if (logoLink) {
+        logoLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            scrollToProgress(0, '#top');
         });
     }
 
@@ -314,37 +478,74 @@ document.addEventListener('DOMContentLoaded', () => {
             // Preload second video
             inactiveEl.src = videos[1];
             
-            // Explicitly start playing the first video
+            // Explicitly start playing
             activeEl.play().catch(e => console.error("Error playing initial about video:", e));
 
             function handleVideoEnd() {
                 inactiveEl.play().then(() => {
-                    // Start crossfade
                     activeEl.style.opacity = '0';
                     inactiveEl.style.opacity = '1';
                     
-                    // Swap logic
                     const temp = activeEl;
                     activeEl = inactiveEl;
                     inactiveEl = temp;
                     
-                    // Advance index
                     currentVideoIndex = (currentVideoIndex + 1) % videos.length;
                     const nextVideoIndex = (currentVideoIndex + 1) % videos.length;
                     
-                    // Preload the next video into the new inactive element after the 1s fade is done
                     setTimeout(() => {
                         inactiveEl.src = videos[nextVideoIndex];
                         inactiveEl.currentTime = 0;
-                        inactiveEl.load(); // Forces reset to play from beginning next time
+                        inactiveEl.load(); 
                     }, 1000);
 
-                    // Listen for the next end
                     activeEl.addEventListener('ended', handleVideoEnd, { once: true });
                 }).catch(e => console.error("Error playing about video:", e));
             }
 
             activeEl.addEventListener('ended', handleVideoEnd, { once: true });
         }
+    }
+
+    // --- Language Switch Logic ---
+    const langContainer = document.getElementById('lang-switch');
+    if (langContainer) {
+        const langBtns = langContainer.querySelectorAll('.lang-btn');
+        
+        langBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                const selectedLang = btn.getAttribute('data-lang');
+                
+                langBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                if (selectedLang === 'en') {
+                    langContainer.classList.remove('de-active');
+                    langContainer.classList.add('en-active');
+                    document.querySelectorAll('[data-i18n="true"]').forEach(el => {
+                        el.innerHTML = el.getAttribute('data-en');
+                    });
+                } else {
+                    langContainer.classList.remove('en-active');
+                    langContainer.classList.add('de-active');
+                    document.querySelectorAll('[data-i18n="true"]').forEach(el => {
+                        el.innerHTML = el.getAttribute('data-de');
+                    });
+                }
+            });
+        });
+
+        langContainer.addEventListener('click', () => {
+            const currentDe = langContainer.classList.contains('de-active');
+            const targetLang = currentDe ? 'en' : 'de';
+            
+            langBtns.forEach(b => {
+                if (b.getAttribute('data-lang') === targetLang) {
+                    b.click();
+                }
+            });
+        });
     }
 });
